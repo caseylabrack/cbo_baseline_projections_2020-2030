@@ -1,0 +1,5 @@
+/* body { max-width: 800px; margin-left: auto; margin-right: auto;} */
+
+.funcName, .funcTotal { font-family: 'Oswald', sans-serif; user-select: none; }
+.funcName { font-size: .8em; font-weight: 500; }
+.funcTotal { font-size: .7em; font-weight: 300; }
