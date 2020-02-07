@@ -1,32 +1,13 @@
-const width =   800,
-      height =  600
+const margin = {top: 40, bottom : 0, left: 0, right: 0}
 
-const colors = ["#608443",
-"#927fcc",
-"#8f8b36",
-"#5e8ecd",
-"#bb7c3e",
-"#71c4d7",
-"#cc687c",
-"#63d5b4",
-"#c575af",
-"#449c6d",
-"#d78875",
-"#9cc883",
-"#cfb6d9",
-"#d5be75",
-"#8c7d95",
-"#bebfa6",
-"#5a8b87",
-"#977d60"]
-
-const labels = d3.scaleOrdinal()
-  .domain(["050", "150", "250", "270", "300", "350", "370", "400", "450", "500", "550", "570", "600", "650", "700", "750", "800", "900", "920", "950"])
-  .range(["National Defense","Intl. Affairs","Science","Energy","Environ.","Agri.","Commerce","Transportation","Regional Development","Social Services","Health","Medicare","Income Security","Social Security","Veterans Benefits","Justice","Gov.","Net Interest","Allowances","Undistributed Offsetting Receipts"])
+const width   =   800 - margin.left - margin.right,
+      height  =   600 - margin.top - margin.bottom
 
 const svg = d3.select("svg")
-  .attr("width", width)
-  .attr("height", height)
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+          .attr("transform", `translate(${margin.left},${margin.top})`)
 
 const treemap = d3.treemap()
     .tile(d3.treemapResquarify)
@@ -34,11 +15,12 @@ const treemap = d3.treemap()
     .padding(1)
     .round(true)
 
-const parseNumber = string => +string.replace(/,/g, "")
+const parseNumber = string => +string.replace(/,/g, ""),
+      formatWithComma = d3.format(",d")
 
-const funcColors = d3.scaleOrdinal().range(colors)
+const colors = ["#608443", "#927fcc", "#8f8b36", "#5e8ecd", "#bb7c3e", "#71c4d7", "#cc687c", "#63d5b4", "#c575af", "#449c6d", "#d78875", "#9cc883", "#cfb6d9", "#d5be75", "#8c7d95", "#bebfa6", "#5a8b87", "#977d60"],
+      funcColors = d3.scaleOrdinal().range(colors)
 
-// d3.csv("data.csv", ({year, func, value}) => ({year: year, func: func, value: +value}))
 d3.csv("data-spread.csv")
   .then(data => {
 
@@ -48,17 +30,52 @@ d3.csv("data-spread.csv")
     let root = d3.hierarchy({values: data}, d => d.values)
                             .sum(d => +d["2020"])
                             .sort((a, b) => b.height - a.height || b.value - a.value)
-    update(root, "2020")
+    treemap(root)
 
-    d3.interval(elapsed => {
-      index++;
-      update(root, index % 2 == 0 ? "2020" : "2030")
-    }, 2000)
+    const animation = () => {
+          index++;
+          root.sum(d => +d[index % 2 == 0 ? "2020" : "2030"])
+          treemap(root)
+          update()
 
-    function update (root, key) {
+          dateHighlighter
+            .transition().duration(1e3).ease(d3.easeLinear)
+            .attr("x", () => index % 2 == 0? 1 : 75 - 51/2)
+        }
 
-      root.sum(d => d[key])
-      treemap(root)
+    let interval = d3.interval(animation, 2000)
+
+    d3.select("svg")
+    .append("g").selectAll("text")
+    .data(["2020", "2030"]).enter()
+      .append("text")
+        .classed("dates", true)
+        .text(d => d)
+        .attr("x", (d,i) => 25 + (i ? 50 : 0))
+        .attr("y", 20)
+        .attr("fill", d3.hcl(0,0,30))
+        .on("click", datum => {
+          interval.stop();
+          restartAnimationButton.style("display", "block");
+
+          index++;
+          root.sum(d => +d[datum])
+          treemap(root)
+          update()
+
+          dateHighlighter
+            .transition().duration(1e3).ease(d3.easeLinear)
+            .attr("x", () => datum == "2020" ? 1 : 75 - 51/2)
+       })
+
+    const restartAnimationButton = d3.select("svg").append("text").text("restart animation?").attr("x", 110).attr("y", 20).attr("fill", d3.hcl(200,50,30))
+      .style("font-size", ".6em").style("font-family", "Oswald").style("font-weight", 300).style("display", "none").style("cursor", "pointer")
+      .on("click", function (d) { interval.stop(); interval = d3.interval(animation, 2000); d3.select(this).style("display", "none")})
+    const dateHighlighter = d3.select("svg").append("rect").attr("x", 1).attr("y", 1).attr("width", "51").attr("height", "25").style("fill", "none").style("stroke", d3.hcl(0,0,80)).style("pointer-events", "none")
+
+    update()
+
+    function update () {
 
       let leaves = svg.selectAll("g.leaf")
         .data(root.leaves(), d => d.data.func)
@@ -75,7 +92,6 @@ d3.csv("data-spread.csv")
         .attr("width", d => d.x1 - d.x0)
         .attr("height", d => d.y1 - d.y0)
 
-
     leavesEntering
       .append("clipPath")
         .attr("id", d => "clip-" + d.data.func)
@@ -87,20 +103,19 @@ d3.csv("data-spread.csv")
 
     var label = leavesEntering.append("text")
       .attr("clip-path", d => `url(#clip-${d.data.func})`)
-      // .style("fill", d3.hcl(0,0,20))
       .style("fill", d => d3.hcl(funcColors(d.data.func)).l > 60 ? d3.hcl(0,0,30) : d3.hcl(0,0,95) )
 
       label.append("tspan")
         .classed("funcName", true)
         .attr("x", d => d.x0 + 2)
         .attr("y", d => d.y0 + 14)
-        .text(d => labels(d.data.func))
+        .text(d => d.data.label)
 
       label.append("tspan")
         .classed("funcTotal", true)
         .attr("x", d => d.x0 + 2)
         .attr("y", d => d.y0 + 28)
-        .text(d => d.value)
+        .text(d => formatWithComma(d.value/1e3))
 
       leaves
         .select("rect")
@@ -118,7 +133,6 @@ d3.csv("data-spread.csv")
           .transition()
           .duration(1e3)
           .ease(d3.easeLinear)
-
             .attr("x", d => d.x0)
             .attr("y", d => d.y0)
             .attr("width", d => d.x1 - d.x0)
@@ -140,8 +154,8 @@ d3.csv("data-spread.csv")
         .attr('x', d => d.x0 + 2)
         .attr('y', d => d.y0 + 28)
         .tween("text", function(d) {
-              const i = d3.interpolate(parseNumber(this.textContent), d.value);
-              return function(t) { this.textContent = d3.format(",d")(i(t)); };
+              const i = d3.interpolate(parseNumber(this.textContent), d.value/1e3)
+              return function(t) { this.textContent = formatWithComma(i(t)) }
             })
     }
   })
