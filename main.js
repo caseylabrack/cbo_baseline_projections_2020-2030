@@ -1,6 +1,10 @@
 const margin = {top: 40, bottom : 0, left: 0, right: 0}
 
-const width   =   800 - margin.left - margin.right,
+// console.log(d3.select("svg").property("parentNode").offsetWidth, window.innerWidth)
+
+const elementWidth = d3.select("svg").property("parentNode").offsetWidth
+
+const width   =   elementWidth - margin.left - margin.right,
       height  =   600 - margin.top - margin.bottom
 
 const svg = d3.select("svg")
@@ -25,6 +29,11 @@ d3.csv("data-spread.csv")
   .then(data => {
 
     funcColors.domain(data.map(d => d.func))
+    d3.select("#legend").html(() => `${data.map(d => `<span style="background: ${funcColors(d.func)}; color: white; padding: 6px;">${d.fullname}</span>`).join(" ")}`).style("display", "none")
+    d3.select("#legendToggle").on("click", function () {
+      d3.event.preventDefault();
+      d3.select("#legend").style("display", function () { console.log(d3.select(this).style("display")); return d3.select(this).style("display") == "none" ? "block" : "none"})
+    })
 
     let index = 0
     let root = d3.hierarchy({values: data}, d => d.values)

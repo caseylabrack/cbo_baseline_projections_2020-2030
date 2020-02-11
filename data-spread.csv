@@ -1,19 +1,19 @@
-label,func,2020,2030
-National Defense,50,715529,921396
-Intl. Affairs,150,51638,66818
-Science,250,34036,45196
-Energy,270,7344,7732
-Environ.,300,43467,59917
-Agri.,350,38834,27130
-Commerce,370,10348,15913
-Transportation,400,98997,122811
-Regional Development,450,28648,37758
-Social Services,500,108233,137034
-Health,550,599264,969362
-Medicare,570,702056,1425492
-Income Security,600,523765,654786
-Social Security,650,1099789,1934006
-Veterans Benefits,700,213533,307776
-Justice,750,68877,95703
-Gov.,800,24678,30531
-Net Interest,900,382205,818801
+label,fullname,func,2020,2030
+National Defense,National Defense,50,715529,921396
+Intl. Affairs,International Affairs,150,51638,66818
+Science,"General Science, Space, and Technology",250,34036,45196
+Energy,Energy,270,7344,7732
+Environ.,Natural Resources and Environment,300,43467,59917
+Agri.,Agriculture,350,38834,27130
+Commerce,Commerce and Housing Credit,370,10348,15913
+Transportation,Transportation,400,98997,122811
+Regional Development,Community and Regional Development,450,28648,37758
+Social Services,"Education, Training, Employment, and Social Services",500,108233,137034
+Health,Health,550,599264,969362
+Medicare,Medicare,570,702056,1425492
+Income Security,Income Security,600,523765,654786
+Social Security,Social Security,650,1099789,1934006
+Veterans Benefits,Veterans Benefits and Services,700,213533,307776
+Justice,Administration of Justice,750,68877,95703
+Gov.,General Government,800,24678,30531
+Net Interest,Net Interest,900,382205,818801
