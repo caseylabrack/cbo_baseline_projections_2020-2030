@@ -1,6 +1,4 @@
-const margin = {top: 40, bottom : 0, left: 0, right: 0}
-
-// console.log(d3.select("svg").property("parentNode").offsetWidth, window.innerWidth)
+const margin = {top: 0, bottom : 0, left: 0, right: 0}
 
 const elementWidth = d3.select("svg").property("parentNode").offsetWidth
 
@@ -42,45 +40,34 @@ d3.csv("data-spread.csv")
     treemap(root)
 
     const animation = () => {
-          index++;
-          root.sum(d => +d[index % 2 == 0 ? "2020" : "2030"])
+
+          const nextYear = d3.selectAll("input[name='yearSelect']:checked").node().value==2020 ? "2030" : "2020"
+          d3.select(`input[value='${nextYear}']`).property("checked", true)
+          root.sum(d => +d[nextYear])
           treemap(root)
           update()
-
-          dateHighlighter
-            .transition().duration(1e3).ease(d3.easeLinear)
-            .attr("x", () => index % 2 == 0? 1 : 75 - 51/2)
         }
 
     let interval = d3.interval(animation, 2000)
 
-    d3.select("svg")
-    .append("g").selectAll("text")
-    .data(["2020", "2030"]).enter()
-      .append("text")
-        .classed("dates", true)
-        .text(d => d)
-        .attr("x", (d,i) => 25 + (i ? 50 : 0))
-        .attr("y", 20)
-        .attr("fill", d3.hcl(0,0,30))
-        .on("click", datum => {
-          interval.stop();
-          restartAnimationButton.style("display", "block");
+    d3.selectAll('input[name="yearSelect"]')
+      .on("click", function (d) {
 
-          index++;
-          root.sum(d => +d[datum])
-          treemap(root)
-          update()
+        interval.stop();
+        d3.select("#restartAnimation").style("display", "inline");
 
-          dateHighlighter
-            .transition().duration(1e3).ease(d3.easeLinear)
-            .attr("x", () => datum == "2020" ? 1 : 75 - 51/2)
-       })
+        root.sum(d => +d[d3.select(this).node().value])
+        treemap(root)
+        update()
+      })
 
-    const restartAnimationButton = d3.select("svg").append("text").text("restart animation?").attr("x", 110).attr("y", 20).attr("fill", d3.hcl(200,50,30))
-      .style("font-size", ".6em").style("font-family", "Oswald").style("font-weight", 300).style("display", "none").style("cursor", "pointer")
-      .on("click", function (d) { interval.stop(); interval = d3.interval(animation, 2000); d3.select(this).style("display", "none")})
-    const dateHighlighter = d3.select("svg").append("rect").attr("x", 1).attr("y", 1).attr("width", "51").attr("height", "25").style("fill", "none").style("stroke", d3.hcl(0,0,80)).style("pointer-events", "none")
+      d3.select("#restartAnimation").on("click", function (d){
+
+        d3.event.preventDefault()
+        interval.stop()
+        interval = d3.interval(animation, 2000)
+        d3.select(this).style("display", "none")
+      })
 
     update()
 
