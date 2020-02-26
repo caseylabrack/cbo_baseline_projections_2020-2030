@@ -27,17 +27,17 @@ const roundToPrecision = precis => x => {
 roundTo10th = roundToPrecision(1),
 roundTo100th = roundToPrecision(2)
 
-const colors = ["#608443", "#927fcc", "#8f8b36", "#5e8ecd", "#bb7c3e", "#71c4d7", "#cc687c", "#63d5b4", "#c575af", "#449c6d", "#d78875", "#9cc883", "#cfb6d9", "#d5be75", "#8c7d95", "#bebfa6", "#5a8b87", "#977d60"],
+const colors = ["#608443", "#927fcc", "#8f8b36", "#bb7c3e", "#71c4d7", "#63d5b4", "#c575af", "#449c6d", "#d78875", "#9cc883", "#cfb6d9", "#d5be75", "#8c7d95", "#bebfa6", "#5a8b87", "#977d60", "#666"],
 funcColors = d3.scaleOrdinal().range(colors)
 
 d3.csv("data-spread.csv")
 .then(data => {
 
   funcColors.domain(data.map(d => d.func))
-  d3.select("#legend").html(() => `${data.map(d => `<span style="background: ${funcColors(d.func)}; color: white; padding: 6px;">${d.fullname}</span>`).join(" ")}`).style("display", "none")
+  d3.select("#legend").html(() => `${data.map(d => `<span style="background: ${funcColors(d.func)}; color: ${d3.hcl(funcColors(d.func)).l > 60 ? "#222" : "#fff"}; padding: 6px;">${d.fullname}</span>`).join(" ")}`).style("display", "none")
   d3.select("#legendToggle").on("click", function () {
     d3.event.preventDefault();
-    d3.select("#legend").style("display", function () { console.log(d3.select(this).style("display")); return d3.select(this).style("display") == "none" ? "block" : "none"})
+    d3.select("#legend").style("display", function () { return d3.select(this).style("display") == "none" ? "block" : "none"})
   })
 
   let root = d3.hierarchy({values: data}, d => d.values)
