@@ -1,19 +1,19 @@
-label,fullname,func,2020,2030
-National Defense,National Defense,50,715529,921396
-Intl. Affairs,International Affairs,150,51638,66818
-Science,"General Science, Space, and Technology",250,34036,45196
-Energy,Energy,270,7344,7732
-Environ.,Natural Resources and Environment,300,43467,59917
-Agri.,Agriculture,350,38834,27130
-Commerce,Commerce and Housing Credit,370,10348,15913
-Transportation,Transportation,400,98997,122811
-Regional Development,Community and Regional Development,450,28648,37758
-Social Services,"Education, Training, Employment, and Social Services",500,108233,137034
-Health,Health,550,599264,969362
-Medicare,Medicare,570,702056,1425492
-Income Security,Income Security,600,523765,654786
-Social Security,Social Security,650,1099789,1934006
-Veterans Benefits,Veterans Benefits and Services,700,213533,307776
-Justice,Administration of Justice,750,68877,95703
-Gov.,General Government,800,24678,30531
-Net Interest,Net Interest,900,382205,818801
+func,2020,2030,label,fullname,share2020,share2030
+050,715529,921396,National Defense,National Defense,0.1505983384130588,0.12000215676616358
+150,51638,66818,Intl. Affairs,International Affairs,0.010868318403549725,0.008702343086796033
+250,34036,45196,Science,"General Science, Space, and Technology",0.007163602098904265,0.0058863045609092385
+270,7344,7732,Energy,Energy,0.001545701428321569,0.0010070118343426461
+300,43467,59917,Environ.,Natural Resources and Environment,0.009148557187480071,0.007803560279139721
+350,38834,27130,Agri.,Agriculture,0.0081734435277015,0.003533397706378167
+370,10348,15913,Commerce,Commerce and Housing Credit,0.002177957295788616,0.002072501205366597
+400,98997,122811,Transportation,Transportation,0.020836029997215465,0.015994843557611833
+450,28648,37758,Regional Development,Community and Regional Development,0.006029582586949389,0.004917583140340097
+500,108233,137034,Social Services,"Education, Training, Employment, and Social Services",0.022779943176951034,0.017847240003532095
+550,599264,969362,Health,Health,0.12612788953454476,0.1262492247493606
+570,702056,1425492,Medicare,Medicare,0.14776265821918946,0.18565536908442412
+600,523765,654786,Income Security,Income Security,0.11023751478824165,0.08527900296972114
+650,1099789,1934006,Social Security,Social Security,0.2314740506743396,0.2518839795253083
+700,213533,307776,Veterans Benefits,Veterans Benefits and Services,0.04494257395067941,0.040084593161748866
+750,68877,95703,Justice,Administration of Justice,0.014496633616354128,0.01246431112029155
+800,24678,30531,Gov.,General Government,0.005194011417227625,0.00397634225482609
+900,382205,818801,Net Interest,Net Interest,0.0804431936835029,0.10664023499373938
