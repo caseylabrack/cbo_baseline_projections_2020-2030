@@ -17,8 +17,7 @@ const treemap = d3.treemap()
     .padding(1)
     .round(true)
 
-const parseNumber = string => +string.replace(/,/g, ""),
-      formatWithComma = d3.format(",d")
+const parseNumber = string => +string.replace(/,/g, "")
 
 // roundToPrecision :: Number -> Number -> String
 const roundToPrecision = precis => x => {
@@ -80,85 +79,85 @@ d3.csv("data-spread.csv")
 
     function update () {
 
-      let leaves = svg.selectAll("g.leaf")
+      svg.selectAll("g.leaf")
         .data(root.leaves(), d => d.data.func)
-
-      let leavesEntering = leaves
-        .enter().append("g").classed("leaf", true)
-
-      leavesEntering
-        .append("rect")
-        .attr("id", d => `rect-${d.data.func}`)
-        .style("fill", d => funcColors(d.data.func))
-        .attr("x", d => d.x0)
-        .attr("y", d => d.y0)
-        .attr("width", d => d.x1 - d.x0)
-        .attr("height", d => d.y1 - d.y0)
-
-    leavesEntering
-      .append("clipPath")
-        .attr("id", d => "clip-" + d.data.func)
-          .append("rect")
+        .join(
+          enter => {
+            const leaves = enter.append("g").classed("leaf", true)
+            leaves.append("rect")
+            .attr("id", d => `rect-${d.data.func}`)
+            .style("fill", d => funcColors(d.data.func))
             .attr("x", d => d.x0)
             .attr("y", d => d.y0)
             .attr("width", d => d.x1 - d.x0)
             .attr("height", d => d.y1 - d.y0)
 
-    var label = leavesEntering.append("text")
-      .attr("clip-path", d => `url(#clip-${d.data.func})`)
-      .style("fill", d => d3.hcl(funcColors(d.data.func)).l > 60 ? d3.hcl(0,0,30) : d3.hcl(0,0,95) )
+            leaves.append("clipPath")
+              .attr("id", d => "clip-" + d.data.func)
+                .append("rect")
+                  .attr("x", d => d.x0)
+                  .attr("y", d => d.y0)
+                  .attr("width", d => d.x1 - d.x0)
+                  .attr("height", d => d.y1 - d.y0)
 
-      label.append("tspan")
-        .classed("funcName", true)
-        .attr("x", d => d.x0 + 2)
-        .attr("y", d => d.y0 + 14)
-        .text(d => d.data.label)
+            const label = leaves.append("text")
+              .attr("clip-path", d => `url(#clip-${d.data.func})`)
+              .style("fill", d => d3.hcl(funcColors(d.data.func)).l > 60 ? d3.hcl(0,0,30) : d3.hcl(0,0,95) )
 
-      label.append("tspan")
-        .classed("funcTotal", true)
-        .attr("x", d => d.x0 + 2)
-        .attr("y", d => d.y0 + 28)
-        .text(d => roundTo10th(d.data[`share${d3.select("input[name='yearSelect']:checked").node().value}`] * 100))
+            label.append("tspan")
+              .classed("funcName", true)
+              .attr("x", d => d.x0 + 2)
+              .attr("y", d => d.y0 + 14)
+              .text(d => d.data.label)
 
-      leaves
-        .select("rect")
-        .transition()
-        .duration(1e3)
-        .ease(d3.easeLinear)
-        .attr("x", d => d.x0)
-        .attr("y", d => d.y0)
-        .attr("width", d => d.x1 - d.x0)
-        .attr("height", d => d.y1 - d.y0)
+            label.append("tspan")
+              .classed("funcTotal", true)
+              .attr("x", d => d.x0 + 2)
+              .attr("y", d => d.y0 + 28)
+              .text(d => roundTo10th(d.data[`share${d3.select("input[name='yearSelect']:checked").node().value}`] * 100))
+          },
 
-      leaves
-        .select("clipPath")
-          .select("rect")
-          .transition()
-          .duration(1e3)
-          .ease(d3.easeLinear)
-            .attr("x", d => d.x0)
-            .attr("y", d => d.y0)
-            .attr("width", d => d.x1 - d.x0)
-            .attr("height", d => d.y1 - d.y0)
+          update => {
+              update
+                .select("rect")
+                .transition()
+                .duration(1e3)
+                .ease(d3.easeLinear)
+                .attr("x", d => d.x0)
+                .attr("y", d => d.y0)
+                .attr("width", d => d.x1 - d.x0)
+                .attr("height", d => d.y1 - d.y0)
 
-      leaves
-        .select("tspan")
-        .transition()
-        .duration(1e3)
-        .ease(d3.easeLinear)
-        .attr('x', d => d.x0 + 2)
-        .attr('y', d => d.y0 + 14)
+              update
+                .select("clipPath")
+                  .select("rect")
+                  .transition()
+                  .duration(1e3)
+                  .ease(d3.easeLinear)
+                    .attr("x", d => d.x0)
+                    .attr("y", d => d.y0)
+                    .attr("width", d => d.x1 - d.x0)
+                    .attr("height", d => d.y1 - d.y0)
 
-      leaves
-        .select(".funcTotal")
-        .transition()
-        .duration(1e3)
-        .ease(d3.easeLinear)
-        .attr('x', d => d.x0 + 2)
-        .attr('y', d => d.y0 + 28)
-        .tween("text", function(d) {
-              const i = d3.interpolate(parseNumber(this.textContent), d.data[`share${d3.select("input[name='yearSelect']:checked").node().value}`] * 100)
-              return function(t) { this.textContent = roundTo10th(i(t)) }
+              update
+                .select("tspan")
+                .transition()
+                .duration(1e3)
+                .ease(d3.easeLinear)
+                .attr('x', d => d.x0 + 2)
+                .attr('y', d => d.y0 + 14)
+
+              update
+                .select(".funcTotal")
+                .transition()
+                .duration(1e3)
+                .ease(d3.easeLinear)
+                .attr('x', d => d.x0 + 2)
+                .attr('y', d => d.y0 + 28)
+                .tween("text", function(d) {
+                      const i = d3.interpolate(parseNumber(this.textContent), d.data[`share${d3.select("input[name='yearSelect']:checked").node().value}`] * 100)
+                      return function(t) { this.textContent = roundTo10th(i(t)) }
+                    })
             })
     }
   })
